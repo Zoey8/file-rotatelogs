@@ -14,9 +14,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lestrrat-go/file-rotatelogs/internal/fileutil"
 	strftime "github.com/lestrrat-go/strftime"
 	"github.com/pkg/errors"
+
+	"github.com/Zoey8/file-rotatelogs/internal/fileutil"
 )
 
 func (c clockFn) Now() time.Time {

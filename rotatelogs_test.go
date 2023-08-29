@@ -12,9 +12,10 @@ import (
 	"time"
 
 	"github.com/jonboulle/clockwork"
-	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
+
+	rotatelogs "github.com/Zoey8/file-rotatelogs"
 )
 
 func TestSatisfiesIOWriter(t *testing.T) {
