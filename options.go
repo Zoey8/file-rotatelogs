@@ -7,14 +7,15 @@ import (
 )
 
 const (
-	optkeyClock         = "clock"
-	optkeyHandler       = "handler"
-	optkeyLinkName      = "link-name"
-	optkeyMaxAge        = "max-age"
-	optkeyRotationTime  = "rotation-time"
-	optkeyRotationSize  = "rotation-size"
-	optkeyRotationCount = "rotation-count"
-	optkeyForceNewFile  = "force-new-file"
+	optkeyClock             = "clock"
+	optkeyHandler           = "handler"
+	optkeyLinkName          = "link-name"
+	optkeyMaxAge            = "max-age"
+	optkeyRotationTime      = "rotation-time"
+	optkeyRotationSize      = "rotation-size"
+	optkeyRotationCount     = "rotation-count"
+	optkeyForceNewFile      = "force-new-file"
+	optkeyFileNameExtension = "file-name-extension"
 )
 
 // WithClock creates a new Option that sets a clock
@@ -86,4 +87,8 @@ func WithHandler(h Handler) Option {
 // rotation is performed
 func ForceNewFile() Option {
 	return option.New(optkeyForceNewFile, true)
+}
+
+func WithFileNameExtension(e string) Option {
+	return option.New(optkeyFileNameExtension, e)
 }

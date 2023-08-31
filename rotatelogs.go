@@ -45,6 +45,7 @@ func New(p string, options ...Option) (*RotateLogs, error) {
 	var maxAge time.Duration
 	var handler Handler
 	var forceNewFile bool
+	var fileNameExtension string
 
 	for _, o := range options {
 		switch o.Name() {
@@ -73,6 +74,8 @@ func New(p string, options ...Option) (*RotateLogs, error) {
 			handler = o.Value().(Handler)
 		case optkeyForceNewFile:
 			forceNewFile = true
+		case optkeyFileNameExtension:
+			fileNameExtension = o.Value().(string)
 		}
 	}
 
@@ -86,16 +89,17 @@ func New(p string, options ...Option) (*RotateLogs, error) {
 	}
 
 	return &RotateLogs{
-		clock:         clock,
-		eventHandler:  handler,
-		globPattern:   globPattern,
-		linkName:      linkName,
-		maxAge:        maxAge,
-		pattern:       pattern,
-		rotationTime:  rotationTime,
-		rotationSize:  rotationSize,
-		rotationCount: rotationCount,
-		forceNewFile:  forceNewFile,
+		clock:             clock,
+		eventHandler:      handler,
+		globPattern:       globPattern,
+		linkName:          linkName,
+		maxAge:            maxAge,
+		pattern:           pattern,
+		rotationTime:      rotationTime,
+		rotationSize:      rotationSize,
+		rotationCount:     rotationCount,
+		forceNewFile:      forceNewFile,
+		fileNameExtension: fileNameExtension,
 	}, nil
 }
 
@@ -160,12 +164,21 @@ func (rl *RotateLogs) getWriterNolock(bailOnRotateFail, useGenerationalNames boo
 			} else {
 				name = fmt.Sprintf("%s.%d", filename, generation)
 			}
+			// add file extension at the end of the filename
+			if rl.fileNameExtension != "" {
+				name = fmt.Sprintf("%s.%s", name, rl.fileNameExtension)
+			}
 			if _, err := os.Stat(name); err != nil {
 				filename = name
 
 				break
 			}
 			generation++
+		}
+	} else {
+		// add file extension at the end of the filename
+		if rl.fileNameExtension != "" {
+			filename = fmt.Sprintf("%s.%s", filename, rl.fileNameExtension)
 		}
 	}
 
