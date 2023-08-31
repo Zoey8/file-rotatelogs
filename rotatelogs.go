@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -363,7 +364,18 @@ func (rl *RotateLogs) rotateNolock(filename string) error {
 		if rl.rotationCount >= uint(len(toUnlink)) {
 			return nil
 		}
-
+		// sort by modification time
+		sort.Slice(toUnlink, func(i, j int) bool {
+			fileInfo1, err := os.Stat(toUnlink[i])
+			if err != nil {
+				return true
+			}
+			fileInfo2, err := os.Stat(toUnlink[j])
+			if err != nil {
+				return false
+			}
+			return fileInfo1.ModTime().Before(fileInfo2.ModTime())
+		})
 		toUnlink = toUnlink[:len(toUnlink)-int(rl.rotationCount)]
 	}
 
